@@ -1,24 +1,110 @@
 <!doctype html>
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#D4001F">
-<!-- INDEXAÇÃO: site privado por padrão (acesso por link/QR). Para o Google indexar: "index, follow" + canonical + robots.txt/sitemap. -->
-<meta name="robots" content="noindex, nofollow">
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
 <title>Painel | Grupo Star Motos</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23D4001F'/%3E%3Cpath d='M9 22V10h3v4.6h8V10h3v12h-3v-4.7h-8V22z' fill='%23fff'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="/styles.css">
-</head>
-<body>
-<noscript><p style="padding:16px">Ative o JavaScript para usar o painel.</p></noscript>
-<main id="adm" class="w"></main>
-<div id="av" role="status" hidden></div>
-<script src="/config.js" defer></script>
-<script src="/lib.js" defer></script>
-<script src="/admin.js" defer></script>
-</body>
-</html>
+<style>
+:root{--bg:#F6F4F1;--ink:#1F2633;--mut:#5C6577;--line:#E7E3DC;--red:#D4001F;--soft:#FDECEE;--ok:#1E9E6A}
+*{box-sizing:border-box;margin:0;padding:0}body{font:15px/1.5 Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
+.w{width:min(1000px,100% - 24px);margin:0 auto;padding:18px 0 80px}h1{font-size:1.4rem}h3{font-size:1.02rem}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
+.b{border:1px solid var(--line);background:#fff;border-radius:99px;padding:8px 16px;font-weight:600;font-size:.88rem}
+.b.on,.b.p{background:var(--red);border-color:var(--red);color:#fff}.b.x{color:var(--red)}
+.c{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.r{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}.m{color:var(--mut);font-size:.88rem}
+.f{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}.f:focus{outline:2px solid rgba(212,0,31,.3)}
+label{display:block;font-size:.8rem;font-weight:700;margin:10px 0 4px}.chk{display:flex;gap:8px;align-items:center}.chk input{width:auto}
+.tag{font-size:.74rem;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--soft);color:var(--red)}
+dialog{border:0;border-radius:16px;padding:20px;width:min(560px,100% - 20px);max-height:92vh;margin:auto}dialog::backdrop{background:rgba(31,38,51,.5)}
+.av{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--soft)}
+.kv{display:grid;grid-template-columns:minmax(120px,1fr) 2fr;gap:2px 12px;font-size:.9rem;margin:10px 0}.kv b{color:var(--mut);font-weight:600}
+#t{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;z-index:9}
+</style></head><body><div class="w" id="app"></div><div id="t" hidden></div>
+<script>
+const U='https://vbzxmliwayxczxarwtgh.supabase.co',K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZienhtbGl3YXl4Y3p4YXJ3dGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MTQ4NTYsImV4cCI6MjEwNjM5MDg1Nn0.3IbBrl1IrHgVR_krvlMVCogJI3ZIoU1WHwe8i1T4cdI',base=U.replace(/\/+$/,'');
+const $=(s,e=document)=>e.querySelector(s),esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let CH=sessionStorage.getItem('ch')||'',TAB='seg_pedidos',D={},CFG={};
+const toast=m=>{const t=$('#t');t.textContent=m;t.hidden=false;clearTimeout(toast.i);toast.i=setTimeout(()=>t.hidden=true,3000)};
+async function api(f,b,pub){const r=await fetch(base+'/rest/v1/rpc/'+f,{method:'POST',headers:{apikey:K,Authorization:'Bearer '+K,'Content-Type':'application/json'},body:JSON.stringify(pub?{}:{chave:CH,...b})});
+ const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(_){}if(!r.ok)throw new Error(j&&j.message||'HTTP '+r.status);return j}
+const lst=t=>api('admin_listar',{p_tabela:t}),sv=(t,d)=>api('admin_salvar',{p_tabela:t,p_dados:d}),del=(t,id)=>api('admin_excluir',{p_tabela:t,p_id:id});
+async function up(f,pasta){const ext=(f.name.split('.').pop()||'').toLowerCase(),p=await api('admin_preparar_upload',{p_ext:ext,p_pasta:pasta});
+ const r=await fetch(base+'/storage/v1/object/site-media/'+p,{method:'POST',headers:{apikey:K,Authorization:'Bearer '+K,'Content-Type':f.type||'application/octet-stream'},body:f});
+ if(!r.ok)throw new Error('Falha no envio ('+r.status+'). Rode o SQL de novo.');return base+'/storage/v1/object/public/site-media/'+p}
+
+const S={
+ seg_pedidos:{n:'Pedidos de seguro'},
+ vendedores:{n:'Vendedores',novo:{ativo:true,ordem:0},t:r=>r.nome,s:r=>[r.cargo,r.telefone,r.unidade].filter(Boolean).join(' · '),
+  c:[['nome','Nome'],['cargo','Cargo / função'],['telefone','Telefone (como aparece)'],['whatsapp','WhatsApp (só números, com 55)'],['foto_url','Foto','img'],['unidade','Unidade / cidade'],['bio','Apresentação','area'],['ordem','Ordem (menor aparece primeiro)','num'],['ativo','Aparece no site','bool']]},
+ contatos:{n:'Contatos e números',novo:{ativo:true,ordem:0,tipo:'outro'},t:r=>r.rotulo,s:r=>r.tipo+' · '+(r.telefone||''),
+  c:[['rotulo','Nome do setor'],['tipo','Tipo (recepcao e seguros trocam os números do site)','select:recepcao,seguros,vendas,outro'],['telefone','Telefone (como aparece)'],['whatsapp','WhatsApp (só números, com 55)'],['ordem','Ordem','num'],['ativo','Ativo','bool']]},
+ seg_perguntas:{n:'Questionário do seguro',novo:{ativo:true,ordem:99,tipo:'text',obrigatoria:false},t:r=>r.ordem+'. '+r.rotulo,s:r=>r.tipo+(r.obrigatoria?' · obrigatória':'')+(r.plano?' · plano: '+r.plano:'')+(r.ativo?'':' · INATIVA'),
+  c:[['rotulo','Pergunta'],['tipo','Tipo de resposta','select:text,tel,cpf,email,date,number,placa,select,area'],['opcoes','Opções (separe por vírgula, só para tipo select)'],['ajuda','Texto de ajuda (opcional)'],['plano','Só neste plano (vazio = todos): Furto e Roubo ou Seguro Total'],['obrigatoria','Obrigatória','bool'],['ordem','Ordem','num'],['ativo','Ativa','bool']]},
+ avaliacoes:{n:'Avaliações',t:r=>r.nome+' · '+r.estrelas+' ★',s:r=>r.status+(r.destacado?' · destaque':'')+' · '+(r.comentario||'sem comentário'),
+  c:[['nome','Nome'],['estrelas','Nota','num'],['comentario','Comentário','area'],['status','Status','select:pendente,aprovado,oculto'],['destacado','Destaque','bool']]},
+ site:{n:'Vídeo e textos'}};
+
+function shell(){$('#app').innerHTML=`<div class="top"><h1>Painel · Grupo Star Motos</h1><div><a class="b" href="/">Ver site</a> <button class="b" id="sair">Sair</button></div></div>
+ <div class="tabs">${Object.keys(S).map(k=>`<button class="b${k===TAB?' on':''}" data-t="${k}">${S[k].n}</button>`).join('')}</div><div id="body"></div>`;
+ document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;show()});
+ $('#sair').onclick=()=>{sessionStorage.removeItem('ch');CH='';login()}}
+function login(m){$('#app').innerHTML=`<div class="c" style="max-width:360px;margin:60px auto"><h3>Acesso restrito</h3><input class="f" id="ch" type="password" placeholder="Senha do painel" autocomplete="off" style="margin:12px 0">
+ ${m?`<p class="m" style="color:var(--red)">${esc(m)}</p>`:''}<button class="b p" id="go" style="width:100%">Entrar</button></div>`;
+ const ir=async()=>{CH=$('#ch').value;try{await lst('contatos');sessionStorage.setItem('ch',CH);show()}catch(e){login(/invalida/.test(e.message)?'Senha inválida.':'Erro: '+e.message)}};
+ $('#go').onclick=ir;$('#ch').onkeydown=e=>e.key==='Enter'&&ir();$('#ch').focus()}
+async function show(){shell();const b=$('#body');b.innerHTML='<p class="m">Carregando…</p>';
+ try{if(TAB==='site')return site();
+  D[TAB]=await lst(TAB);if(TAB==='seg_pedidos'){D.vendedores=await lst('vendedores');return pedidos()}lista()}
+ catch(e){if(/invalida/.test(e.message))login('Senha inválida.');else b.innerHTML='<p class="m">Erro: '+esc(e.message)+'</p>'}}
+
+function lista(){const s=S[TAB],L=D[TAB];
+ $('#body').innerHTML=`${s.novo?`<button class="b p" id="nv">+ Adicionar</button>`:''}<div style="margin-top:12px">${L.map((r,i)=>`<div class="c r"><div class="r" style="gap:12px;justify-content:flex-start">${r.foto_url!==undefined?`<img class="av" src="${esc(r.foto_url||'')}" alt="" onerror="this.style.visibility='hidden'">`:''}<div><b>${esc(s.t(r))}</b><div class="m">${esc(s.s(r))}</div></div></div>
+ <div><button class="b" data-e="${i}">Editar</button> <button class="b x" data-x="${i}">Excluir</button></div></div>`).join('')||'<p class="m">Nada por aqui ainda.</p>'}</div>`;
+ if($('#nv'))$('#nv').onclick=()=>form({...s.novo});
+ document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>form(L[b.dataset.e]));
+ document.querySelectorAll('[data-x]').forEach(b=>b.onclick=async()=>{if(!confirm('Excluir para sempre?'))return;try{await del(TAB,L[b.dataset.x].id);toast('Excluído');show()}catch(e){toast(e.message)}})}
+function form(r){const s=S[TAB],d=document.createElement('dialog');
+ d.innerHTML=`<h3>${r.id?'Editar':'Adicionar'} · ${esc(s.n)}</h3><form>${s.c.map(([k,l,t])=>{const v=r[k]??'';t=t||'text';
+  if(t==='bool')return`<label class="chk"><input type="checkbox" name="${k}" ${r[k]?'checked':''}> ${l}</label>`;
+  if(t==='area')return`<label>${l}</label><textarea class="f" name="${k}" rows="3">${esc(v)}</textarea>`;
+  if(t.startsWith('select:'))return`<label>${l}</label><select class="f" name="${k}">${t.slice(7).split(',').map(o=>`<option ${o===v?'selected':''}>${o}</option>`).join('')}</select>`;
+  if(t==='img')return`<label>${l}</label><div class="r" style="justify-content:flex-start;gap:12px"><img class="av" id="pv" src="${esc(v)}" alt=""><input type="file" accept="image/*" id="fi"></div><input type="hidden" name="${k}" value="${esc(v)}">`;
+  return`<label>${l}</label><input class="f" name="${k}" type="${t==='num'?'number':'text'}" value="${esc(v)}">`}).join('')}
+  <div class="r" style="margin-top:16px"><button type="button" class="b" id="cn">Cancelar</button><button class="b p" id="ok">Salvar</button></div></form>`;
+ document.body.appendChild(d);d.showModal();d.onclose=()=>d.remove();$('#cn',d).onclick=()=>d.close();
+ const fi=$('#fi',d);if(fi)fi.onchange=async()=>{const f=fi.files[0];if(!f)return;if(f.size>6e6)return toast('Foto acima de 6 MB');
+  try{toast('Enviando foto…');const u=await up(f,'f');$('[name=foto_url]',d).value=u;$('#pv',d).src=u;toast('Foto enviada. Clique em Salvar.')}catch(e){toast(e.message)}};
+ $('form',d).onsubmit=async e=>{e.preventDefault();const o={...r};
+  s.c.forEach(([k,,t])=>{const el=$('[name='+k+']',d);o[k]=t==='bool'?el.checked:t==='num'?(el.value===''?null:Number(el.value)):el.value.trim()});
+  if(!o.id)delete o.id;if(s.c[0][0]==='nome'&&!o.nome||s.c[0][0]==='rotulo'&&!o.rotulo)return toast('Preencha o primeiro campo');
+  try{await sv(TAB,o);d.close();toast('Salvo!');show()}catch(er){toast(er.message)}}}
+
+const fone=p=>{const x=(p.dados||[]).find(i=>String(i.v).replace(/\D/g,'').length>=10&&/tel|whats|fone|celular/i.test(i.r));return x?String(x.v).replace(/\D/g,''):''};
+function pedidos(){const L=D.seg_pedidos,V=Object.fromEntries(D.vendedores.map(v=>[v.id,v.nome]));
+ $('#body').innerHTML=`<div class="r" style="margin-bottom:10px"><span class="m">${L.length} pedidos · ${L.filter(p=>p.status==='novo').length} novos</span><button class="b" id="csv">Baixar planilha (CSV)</button></div>`+
+ (L.map((p,i)=>`<div class="c"><div class="r"><b>${esc(((p.dados||[]).find(x=>/nome/i.test(x.r))||{}).v||'Sem nome')}</b><span class="tag">${esc(p.plano||'')} · ${p.status}</span></div>
+ <div class="m">${new Date(p.criado_em).toLocaleString('pt-BR')}${p.vendedor_id?' · vendedor: '+esc(V[p.vendedor_id]||'—'):''}</div>
+ <div class="kv">${(p.dados||[]).map(x=>`<b>${esc(x.r)}</b><span>${esc(x.v)||'—'}</span>`).join('')}</div>
+ <div class="r"><select class="f" style="width:auto" data-s="${i}">${['novo','em contato','cotado','fechado','perdido'].map(o=>`<option ${o===p.status?'selected':''}>${o}</option>`).join('')}</select>
+ <input class="f" style="flex:1;min-width:160px" placeholder="Observação interna" value="${esc(p.obs||'')}" data-o="${i}">
+ <button class="b p" data-k="${i}">Salvar</button>${fone(p)?`<a class="b" target="_blank" href="https://wa.me/55${fone(p).replace(/^55/,'')}">WhatsApp</a>`:''}<button class="b x" data-d="${i}">Excluir</button></div></div>`).join('')||'<p class="m">Nenhum pedido ainda.</p>');
+ document.querySelectorAll('[data-k]').forEach(b=>b.onclick=async()=>{const i=b.dataset.k,p=L[i];try{await sv('seg_pedidos',{id:p.id,status:$('[data-s="'+i+'"]').value,obs:$('[data-o="'+i+'"]').value});toast('Salvo');show()}catch(e){toast(e.message)}});
+ document.querySelectorAll('[data-d]').forEach(b=>b.onclick=async()=>{if(confirm('Excluir este pedido?'))try{await del('seg_pedidos',L[b.dataset.d].id);show()}catch(e){toast(e.message)}});
+ $('#csv').onclick=()=>{const cols=[...new Set(L.flatMap(p=>(p.dados||[]).map(x=>x.r)))],q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const rows=[['Data','Plano','Status','Vendedor',...cols,'Obs'],...L.map(p=>[new Date(p.criado_em).toLocaleString('pt-BR'),p.plano,p.status,V[p.vendedor_id]||'',...cols.map(c=>((p.dados||[]).find(x=>x.r===c)||{}).v||''),p.obs||''])];
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(q).join(';')).join('\n')],{type:'text/csv'}));a.download='pedidos-seguro.csv';a.click()}}
+
+async function site(){CFG=await api('site_config_publica',{},1)||{};const c=CFG;
+ $('#body').innerHTML=`<div class="c"><h3>Vídeo da página inicial</h3><label>Enviar arquivo (MP4, WebM ou MOV até 50 MB)</label><input type="file" id="arq" accept="video/*">
+ <label>Ou colar link (YouTube, Vimeo ou .mp4)</label><input class="f" id="lk" placeholder="https://" value="${esc(c.video_url||'')}">
+ <div class="r" style="margin-top:12px;justify-content:flex-start"><button class="b p" id="sl">Salvar link</button><button class="b x" id="rv">Remover vídeo</button></div></div>
+ <div class="c"><h3>Textos do topo</h3><label>Título</label><input class="f" id="t1" value="${esc(c.titulo||'')}"><label>Subtítulo</label><textarea class="f" id="t2" rows="3">${esc(c.subtitulo||'')}</textarea>
+ <label>Legenda do vídeo</label><textarea class="f" id="t3" rows="3">${esc(c.legenda||'')}</textarea><p class="m">Vazio = texto original do site.</p><button class="b p" id="st" style="margin-top:10px">Salvar textos</button></div>`;
+ const cfg=async(d,m)=>{try{await api('admin_salvar_config',{p_dados:d});toast(m);site()}catch(e){toast(e.message)}};
+ $('#arq').onchange=async e=>{const f=e.target.files[0];if(!f)return;if(f.size>50*1048576)return toast('Acima de 50 MB. Use link do YouTube.');
+  try{toast('Enviando… não feche a página.');cfg({video_url:await up(f,'v')},'Vídeo publicado!')}catch(er){toast(er.message)}};
+ $('#sl').onclick=()=>{const v=$('#lk').value.trim();if(!/^https:\/\//i.test(v))return toast('Cole um link com https://');cfg({video_url:v},'Link salvo')};
+ $('#rv').onclick=()=>confirm('Remover o vídeo?')&&cfg({video_url:''},'Vídeo removido');
+ $('#st').onclick=()=>cfg({titulo:$('#t1').value.trim(),subtitulo:$('#t2').value.trim(),legenda:$('#t3').value.trim()},'Textos salvos')}
+CH?show():login();
+</script></body></html>
