@@ -25,9 +25,12 @@ const U='https://vbzxmliwayxczxarwtgh.supabase.co',K='eyJhbGciOiJIUzI1NiIsInR5cC
 const $=(s,e=document)=>e.querySelector(s),esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let CH=sessionStorage.getItem('ch')||'',TAB='seg_pedidos',D={},CFG={};
 const toast=m=>{const t=$('#t');t.textContent=m;t.hidden=false;clearTimeout(toast.i);toast.i=setTimeout(()=>t.hidden=true,3000)};
-async function api(f,b,pub){const r=await fetch(base+'/rest/v1/rpc/'+f,{method:'POST',headers:{apikey:K,Authorization:'Bearer '+K,'Content-Type':'application/json'},body:JSON.stringify(pub?{}:{chave:CH,...b})});
- const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(_){}if(!r.ok)throw new Error(j&&j.message||'HTTP '+r.status);return j}
+async function api(f,b,pub){let r;try{r=await fetch(base+'/rest/v1/rpc/'+f,{method:'POST',headers:{apikey:K,Authorization:'Bearer '+K,'Content-Type':'application/json'},body:JSON.stringify(pub?{}:{chave:CH,...b})})}catch(_){throw new Error('Sem conexão com o banco. Verifique a internet.')}
+ const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(_){}if(!r.ok){const m=j&&j.message||'HTTP '+r.status;throw new Error(/find the function|schema cache|does not exist|PGRST20/i.test(m)||r.status===404?'Banco desatualizado: rode o arquivo supabase.sql no Supabase (SQL Editor) e recarregue esta página.':m)}return j}
 const lst=t=>api('admin_listar',{p_tabela:t}),sv=(t,d)=>api('admin_salvar',{p_tabela:t,p_dados:d}),del=(t,id)=>api('admin_excluir',{p_tabela:t,p_id:id});
+const redim=f=>new Promise(ok=>{if(!/^image\/(jpeg|png|webp)$/.test(f.type))return ok(f);const im=new Image(),u=URL.createObjectURL(f);
+ im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+  c.toBlob(b=>ok(b?new File([b],'foto.jpg',{type:'image/jpeg'}):f),'image/jpeg',.85)};im.onerror=()=>ok(f);im.src=u});
 async function up(f,pasta){const ext=(f.name.split('.').pop()||'').toLowerCase(),p=await api('admin_preparar_upload',{p_ext:ext,p_pasta:pasta});
  const r=await fetch(base+'/storage/v1/object/site-media/'+p,{method:'POST',headers:{apikey:K,Authorization:'Bearer '+K,'Content-Type':f.type||'application/octet-stream'},body:f});
  if(!r.ok)throw new Error('Falha no envio ('+r.status+'). Rode o SQL de novo.');return base+'/storage/v1/object/public/site-media/'+p}
@@ -50,18 +53,21 @@ function shell(){$('#app').innerHTML=`<div class="top"><h1>Painel · Grupo Star 
  $('#sair').onclick=()=>{sessionStorage.removeItem('ch');CH='';login()}}
 function login(m){$('#app').innerHTML=`<div class="c" style="max-width:360px;margin:60px auto"><h3>Acesso restrito</h3><input class="f" id="ch" type="password" placeholder="Senha do painel" autocomplete="off" style="margin:12px 0">
  ${m?`<p class="m" style="color:var(--red)">${esc(m)}</p>`:''}<button class="b p" id="go" style="width:100%">Entrar</button></div>`;
- const ir=async()=>{CH=$('#ch').value;try{await lst('contatos');sessionStorage.setItem('ch',CH);show()}catch(e){login(/invalida/.test(e.message)?'Senha inválida.':'Erro: '+e.message)}};
+ const ir=async()=>{CH=$('#ch').value;try{await lst('contatos');sessionStorage.setItem('ch',CH);show()}catch(e){login(/invalida/i.test(e.message)?'Senha inválida.':e.message)}};
  $('#go').onclick=ir;$('#ch').onkeydown=e=>e.key==='Enter'&&ir();$('#ch').focus()}
 async function show(){shell();const b=$('#body');b.innerHTML='<p class="m">Carregando…</p>';
  try{if(TAB==='site')return site();
   D[TAB]=await lst(TAB);if(TAB==='seg_pedidos'){D.vendedores=await lst('vendedores');return pedidos()}lista()}
  catch(e){if(/invalida/.test(e.message))login('Senha inválida.');else b.innerHTML='<p class="m">Erro: '+esc(e.message)+'</p>'}}
 
-function lista(){const s=S[TAB],L=D[TAB];
+function lista(){const s=S[TAB],L=D[TAB],ord=s.c.some(x=>x[0]==='ordem');
  $('#body').innerHTML=`${s.novo?`<button class="b p" id="nv">+ Adicionar</button>`:''}<div style="margin-top:12px">${L.map((r,i)=>`<div class="c r"><div class="r" style="gap:12px;justify-content:flex-start">${r.foto_url!==undefined?`<img class="av" src="${esc(r.foto_url||'')}" alt="" onerror="this.style.visibility='hidden'">`:''}<div><b>${esc(s.t(r))}</b><div class="m">${esc(s.s(r))}</div></div></div>
- <div><button class="b" data-e="${i}">Editar</button> <button class="b x" data-x="${i}">Excluir</button></div></div>`).join('')||'<p class="m">Nada por aqui ainda.</p>'}</div>`;
+ <div>${ord?`<button class="b" data-u="${i}" aria-label="Subir">▲</button> <button class="b" data-n="${i}" aria-label="Descer">▼</button> `:''}<button class="b" data-e="${i}">Editar</button> <button class="b x" data-x="${i}">Excluir</button></div></div>`).join('')||'<p class="m">Nada por aqui ainda.</p>'}</div>`;
  if($('#nv'))$('#nv').onclick=()=>form({...s.novo});
  document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>form(L[b.dataset.e]));
+ const mv=async(i,d)=>{const j=i+d;if(j<0||j>=L.length)return;const A=[...L];[A[i],A[j]]=[A[j],A[i]];
+  try{for(let k=0;k<A.length;k++)if(A[k].ordem!==k*10)await sv(TAB,{...A[k],ordem:k*10});show()}catch(e){toast(e.message)}};
+ document.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>mv(+b.dataset.u,-1));document.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>mv(+b.dataset.n,1));
  document.querySelectorAll('[data-x]').forEach(b=>b.onclick=async()=>{if(!confirm('Excluir para sempre?'))return;try{await del(TAB,L[b.dataset.x].id);toast('Excluído');show()}catch(e){toast(e.message)}})}
 function form(r){const s=S[TAB],d=document.createElement('dialog');
  d.innerHTML=`<h3>${r.id?'Editar':'Adicionar'} · ${esc(s.n)}</h3><form>${s.c.map(([k,l,t])=>{const v=r[k]??'';t=t||'text';
@@ -73,25 +79,30 @@ function form(r){const s=S[TAB],d=document.createElement('dialog');
   <div class="r" style="margin-top:16px"><button type="button" class="b" id="cn">Cancelar</button><button class="b p" id="ok">Salvar</button></div></form>`;
  document.body.appendChild(d);d.showModal();d.onclose=()=>d.remove();$('#cn',d).onclick=()=>d.close();
  const fi=$('#fi',d);if(fi)fi.onchange=async()=>{const f=fi.files[0];if(!f)return;if(f.size>6e6)return toast('Foto acima de 6 MB');
-  try{toast('Enviando foto…');const u=await up(f,'f');$('[name=foto_url]',d).value=u;$('#pv',d).src=u;toast('Foto enviada. Clique em Salvar.')}catch(e){toast(e.message)}};
+  try{toast('Enviando foto…');const u=await up(await redim(f),'f');$('[name=foto_url]',d).value=u;$('#pv',d).src=u;toast('Foto enviada. Clique em Salvar.')}catch(e){toast(e.message)}};
  $('form',d).onsubmit=async e=>{e.preventDefault();const o={...r};
   s.c.forEach(([k,,t])=>{const el=$('[name='+k+']',d);o[k]=t==='bool'?el.checked:t==='num'?(el.value===''?null:Number(el.value)):el.value.trim()});
   if(!o.id)delete o.id;if(s.c[0][0]==='nome'&&!o.nome||s.c[0][0]==='rotulo'&&!o.rotulo)return toast('Preencha o primeiro campo');
   try{await sv(TAB,o);d.close();toast('Salvo!');show()}catch(er){toast(er.message)}}}
 
+const ST=['novo','em contato','cotado','fechado','perdido'];
 const fone=p=>{const x=(p.dados||[]).find(i=>String(i.v).replace(/\D/g,'').length>=10&&/tel|whats|fone|celular/i.test(i.r));return x?String(x.v).replace(/\D/g,''):''};
-function pedidos(){const L=D.seg_pedidos,V=Object.fromEntries(D.vendedores.map(v=>[v.id,v.nome]));
- $('#body').innerHTML=`<div class="r" style="margin-bottom:10px"><span class="m">${L.length} pedidos · ${L.filter(p=>p.status==='novo').length} novos</span><button class="b" id="csv">Baixar planilha (CSV)</button></div>`+
- (L.map((p,i)=>`<div class="c"><div class="r"><b>${esc(((p.dados||[]).find(x=>/nome/i.test(x.r))||{}).v||'Sem nome')}</b><span class="tag">${esc(p.plano||'')} · ${p.status}</span></div>
- <div class="m">${new Date(p.criado_em).toLocaleString('pt-BR')}${p.vendedor_id?' · vendedor: '+esc(V[p.vendedor_id]||'—'):''}</div>
+function pedidos(){const L=D.seg_pedidos,V=Object.fromEntries(D.vendedores.map(v=>[v.id,v.nome]));D.f=D.f||{q:'',s:''};
+ $('#body').innerHTML=`<div class="r" style="margin-bottom:10px"><span class="m">${L.length} pedidos · ${L.filter(p=>p.status==='novo').length} novos</span><button class="b" id="csv">Baixar planilha (CSV)</button></div>
+ <div class="r" style="margin-bottom:12px;justify-content:flex-start"><input class="f" id="q" style="flex:1;min-width:180px" placeholder="Buscar por nome, telefone, cidade…" value="${esc(D.f.q)}">
+ <select class="f" id="fs" style="width:auto"><option value="">Todos os status</option>${ST.map(o=>`<option ${o===D.f.s?'selected':''}>${o}</option>`).join('')}</select></div><div id="pl"></div>`;
+ const draw=()=>{const q=D.f.q.toLowerCase(),v=L.map((p,i)=>[p,i]).filter(([p])=>(!D.f.s||p.status===D.f.s)&&(!q||JSON.stringify(p.dados).toLowerCase().includes(q)));
+  $('#pl').innerHTML=v.map(([p,i])=>`<div class="c"><div class="r"><b>${esc(((p.dados||[]).find(x=>/nome/i.test(x.r))||{}).v||'Sem nome')}</b><span class="tag">${esc(p.plano||'')} · ${p.status}</span></div>
+ <div class="m">${new Date(p.criado_em).toLocaleString('pt-BR')}${p.vendedor_id?' · consultor: '+esc(V[p.vendedor_id]||'—'):''}</div>
  <div class="kv">${(p.dados||[]).map(x=>`<b>${esc(x.r)}</b><span>${esc(x.v)||'—'}</span>`).join('')}</div>
- <div class="r"><select class="f" style="width:auto" data-s="${i}">${['novo','em contato','cotado','fechado','perdido'].map(o=>`<option ${o===p.status?'selected':''}>${o}</option>`).join('')}</select>
+ <div class="r"><select class="f" style="width:auto" data-s="${i}">${ST.map(o=>`<option ${o===p.status?'selected':''}>${o}</option>`).join('')}</select>
  <input class="f" style="flex:1;min-width:160px" placeholder="Observação interna" value="${esc(p.obs||'')}" data-o="${i}">
- <button class="b p" data-k="${i}">Salvar</button>${fone(p)?`<a class="b" target="_blank" href="https://wa.me/55${fone(p).replace(/^55/,'')}">WhatsApp</a>`:''}<button class="b x" data-d="${i}">Excluir</button></div></div>`).join('')||'<p class="m">Nenhum pedido ainda.</p>');
- document.querySelectorAll('[data-k]').forEach(b=>b.onclick=async()=>{const i=b.dataset.k,p=L[i];try{await sv('seg_pedidos',{id:p.id,status:$('[data-s="'+i+'"]').value,obs:$('[data-o="'+i+'"]').value});toast('Salvo');show()}catch(e){toast(e.message)}});
- document.querySelectorAll('[data-d]').forEach(b=>b.onclick=async()=>{if(confirm('Excluir este pedido?'))try{await del('seg_pedidos',L[b.dataset.d].id);show()}catch(e){toast(e.message)}});
+ <button class="b p" data-k="${i}">Salvar</button>${fone(p)?`<a class="b" target="_blank" rel="noopener" href="https://wa.me/55${fone(p).replace(/^55/,'')}">WhatsApp</a>`:''}<button class="b x" data-d="${i}">Excluir</button></div></div>`).join('')||'<p class="m">Nenhum pedido encontrado.</p>';
+  document.querySelectorAll('[data-k]').forEach(b=>b.onclick=async()=>{const i=b.dataset.k,p=L[i];try{await sv('seg_pedidos',{id:p.id,status:$('[data-s="'+i+'"]').value,obs:$('[data-o="'+i+'"]').value});toast('Salvo');show()}catch(e){toast(e.message)}});
+  document.querySelectorAll('[data-d]').forEach(b=>b.onclick=async()=>{if(confirm('Excluir este pedido?'))try{await del('seg_pedidos',L[b.dataset.d].id);show()}catch(e){toast(e.message)}})};
+ $('#q').oninput=e=>{D.f.q=e.target.value;draw()};$('#fs').onchange=e=>{D.f.s=e.target.value;draw()};draw();
  $('#csv').onclick=()=>{const cols=[...new Set(L.flatMap(p=>(p.dados||[]).map(x=>x.r)))],q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-  const rows=[['Data','Plano','Status','Vendedor',...cols,'Obs'],...L.map(p=>[new Date(p.criado_em).toLocaleString('pt-BR'),p.plano,p.status,V[p.vendedor_id]||'',...cols.map(c=>((p.dados||[]).find(x=>x.r===c)||{}).v||''),p.obs||''])];
+  const rows=[['Data','Plano','Status','Consultor',...cols,'Obs'],...L.map(p=>[new Date(p.criado_em).toLocaleString('pt-BR'),p.plano,p.status,V[p.vendedor_id]||'',...cols.map(c=>((p.dados||[]).find(x=>x.r===c)||{}).v||''),p.obs||''])];
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(q).join(';')).join('\n')],{type:'text/csv'}));a.download='pedidos-seguro.csv';a.click()}}
 
 async function site(){CFG=await api('site_config_publica',{},1)||{};const c=CFG;
