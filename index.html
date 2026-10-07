@@ -41,8 +41,8 @@ const S={
   c:[['nome','Nome'],['cargo','Cargo / função'],['telefone','Telefone (como aparece)'],['whatsapp','WhatsApp (só números, com 55)'],['foto_url','Foto','img'],['unidade','Unidade / cidade'],['bio','Apresentação','area'],['ordem','Ordem (menor aparece primeiro)','num'],['ativo','Aparece no site','bool']]},
  contatos:{n:'Contatos e números',novo:{ativo:true,ordem:0,tipo:'outro'},t:r=>r.rotulo,s:r=>r.tipo+' · '+(r.telefone||''),
   c:[['rotulo','Nome do setor'],['tipo','Tipo (recepcao e seguros trocam os números do site)','select:recepcao,seguros,vendas,outro'],['telefone','Telefone (como aparece)'],['whatsapp','WhatsApp (só números, com 55)'],['ordem','Ordem','num'],['ativo','Ativo','bool']]},
- seg_perguntas:{n:'Questionário do seguro',novo:{ativo:true,ordem:99,tipo:'text',obrigatoria:false},t:r=>r.ordem+'. '+r.rotulo,s:r=>r.tipo+(r.obrigatoria?' · obrigatória':'')+(r.plano?' · plano: '+r.plano:'')+(r.ativo?'':' · INATIVA'),
-  c:[['rotulo','Pergunta'],['tipo','Tipo de resposta','select:text,tel,cpf,email,date,number,placa,select,area'],['opcoes','Opções (separe por vírgula, só para tipo select)'],['ajuda','Texto de ajuda (opcional)'],['plano','Só neste plano (vazio = todos): Furto e Roubo ou Seguro Total'],['obrigatoria','Obrigatória','bool'],['ordem','Ordem','num'],['ativo','Ativa','bool']]},
+ seg_perguntas:{n:'Questionário do seguro',novo:{ativo:true,ordem:99,tipo:'text',obrigatoria:true},t:r=>r.ordem+'. '+r.rotulo,s:r=>r.tipo+(r.obrigatoria?' · obrigatória':'')+(r.plano?' · plano: '+r.plano:'')+(r.ativo?'':' · INATIVA'),
+  c:[['rotulo','Pergunta'],['tipo','Tipo de resposta','select:text,tel,cpf,email,date,number,placa,select,area'],['opcoes','Opções (separe por vírgula, só tipo select). Coloque ! antes da opção que BLOQUEIA a cotação. Ex.: Sim,!Não'],['ajuda','Texto de ajuda (opcional)'],['plano','Só neste plano (vazio = todos)','select:,Furto e Roubo,Seguro Total'],['obrigatoria','Obrigatória','bool'],['ordem','Ordem','num'],['ativo','Ativa','bool']]},
  avaliacoes:{n:'Avaliações',t:r=>r.nome+' · '+r.estrelas+' ★',s:r=>r.status+(r.destacado?' · destaque':'')+' · '+(r.comentario||'sem comentário'),
   c:[['nome','Nome'],['estrelas','Nota','num'],['comentario','Comentário','area'],['status','Status','select:pendente,aprovado,oculto'],['destacado','Destaque','bool']]},
  site:{n:'Vídeo e textos'}};
@@ -51,10 +51,10 @@ function shell(){$('#app').innerHTML=`<div class="top"><h1>Painel · Grupo Star 
  <div class="tabs">${Object.keys(S).map(k=>`<button class="b${k===TAB?' on':''}" data-t="${k}">${S[k].n}</button>`).join('')}</div><div id="body"></div>`;
  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;show()});
  $('#sair').onclick=()=>{sessionStorage.removeItem('ch');CH='';login()}}
-function login(m){$('#app').innerHTML=`<div class="c" style="max-width:360px;margin:60px auto"><h3>Acesso restrito</h3><input class="f" id="ch" type="password" placeholder="Senha do painel" autocomplete="off" style="margin:12px 0">
+function login(m){$('#app').innerHTML=`<div class="c" style="max-width:360px;margin:60px auto"><h3>Acesso restrito</h3><input class="f" id="ch" type="password" placeholder="Senha do painel" autocomplete="current-password" style="margin:12px 0">
  ${m?`<p class="m" style="color:var(--red)">${esc(m)}</p>`:''}<button class="b p" id="go" style="width:100%">Entrar</button></div>`;
- const ir=async()=>{CH=$('#ch').value;try{await lst('contatos');sessionStorage.setItem('ch',CH);show()}catch(e){login(/invalida/i.test(e.message)?'Senha inválida.':e.message)}};
- $('#go').onclick=ir;$('#ch').onkeydown=e=>e.key==='Enter'&&ir();$('#ch').focus()}
+ const ir=async()=>{CH=$('#ch').value;if(!CH)return;$('#go').disabled=true;$('#go').textContent='Entrando…';try{await lst('contatos');sessionStorage.setItem('ch',CH);show()}catch(e){login(/invalida/i.test(e.message)?'Senha inválida.':e.message)}};
+ $('#go').onclick=ir;$('#ch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();ir()}});setTimeout(()=>$('#ch').focus(),50)}
 async function show(){shell();const b=$('#body');b.innerHTML='<p class="m">Carregando…</p>';
  try{if(TAB==='site')return site();
   D[TAB]=await lst(TAB);if(TAB==='seg_pedidos'){D.vendedores=await lst('vendedores');return pedidos()}lista()}
@@ -115,7 +115,7 @@ async function site(){CFG=await api('site_config_publica',{},1)||{};const c=CFG;
  $('#arq').onchange=async e=>{const f=e.target.files[0];if(!f)return;if(f.size>50*1048576)return toast('Acima de 50 MB. Use link do YouTube.');
   try{toast('Enviando… não feche a página.');cfg({video_url:await up(f,'v')},'Vídeo publicado!')}catch(er){toast(er.message)}};
  $('#sl').onclick=()=>{const v=$('#lk').value.trim();if(!/^https:\/\//i.test(v))return toast('Cole um link com https://');cfg({video_url:v},'Link salvo')};
- $('#rv').onclick=()=>confirm('Remover o vídeo?')&&cfg({video_url:''},'Vídeo removido');
+ $('#rv').onclick=()=>{if(confirm('Remover o vídeo?'))cfg({video_url:''},'Vídeo removido')};
  $('#st').onclick=()=>cfg({titulo:$('#t1').value.trim(),subtitulo:$('#t2').value.trim(),legenda:$('#t3').value.trim()},'Textos salvos')}
 CH?show():login();
 </script></body></html>
