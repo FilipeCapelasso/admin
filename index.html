@@ -1,121 +1,244 @@
-<!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
-<title>Painel | Grupo Star Motos</title>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plano dos 30 Meses</title>
 <style>
-:root{--bg:#F6F4F1;--ink:#1F2633;--mut:#5C6577;--line:#E7E3DC;--red:#D4001F;--soft:#FDECEE;--ok:#1E9E6A}
-*{box-sizing:border-box;margin:0;padding:0}body{font:15px/1.5 Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
-button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
-.w{width:min(1000px,100% - 24px);margin:0 auto;padding:18px 0 80px}h1{font-size:1.4rem}h3{font-size:1.02rem}
-.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
-.b{border:1px solid var(--line);background:#fff;border-radius:99px;padding:8px 16px;font-weight:600;font-size:.88rem}
-.b.on,.b.p{background:var(--red);border-color:var(--red);color:#fff}.b.x{color:var(--red)}
-.c{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
-.r{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}.m{color:var(--mut);font-size:.88rem}
-.f{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}.f:focus{outline:2px solid rgba(212,0,31,.3)}
-label{display:block;font-size:.8rem;font-weight:700;margin:10px 0 4px}.chk{display:flex;gap:8px;align-items:center}.chk input{width:auto}
-.tag{font-size:.74rem;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--soft);color:var(--red)}
-dialog{border:0;border-radius:16px;padding:20px;width:min(560px,100% - 20px);max-height:92vh;margin:auto}dialog::backdrop{background:rgba(31,38,51,.5)}
-.av{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--soft)}
-.kv{display:grid;grid-template-columns:minmax(120px,1fr) 2fr;gap:2px 12px;font-size:.9rem;margin:10px 0}.kv b{color:var(--mut);font-weight:600}
-#t{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;z-index:9}
-</style></head><body><div class="w" id="app"></div><div id="t" hidden></div>
+:root{--bg:#faf7f0;--card:#fff;--tx:#1b1d22;--mu:#6b7280;--bd:#e6e1d4;--ac:#b8860b;--g:#15803d;--r:#b91c1c;--b:#2563eb;--v:#7c3aed;--w:#b45309;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1014;--card:#171a21;--tx:#eceef2;--mu:#98a0ae;--bd:#272c36;--ac:#e0b341;--g:#4ade80;--r:#f87171;--b:#60a5fa;--v:#a78bfa;--w:#fbbf24}}
+:root[data-theme="dark"]{--bg:#0e1014;--card:#171a21;--tx:#eceef2;--mu:#98a0ae;--bd:#272c36;--ac:#e0b341;--g:#4ade80;--r:#f87171;--b:#60a5fa;--v:#a78bfa;--w:#fbbf24}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:980px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:clamp(28px,6vw,44px);margin:.2em 0;line-height:1.1}
+h2{font-size:20px;margin:36px 0 12px}
+.hero{text-align:center;padding:28px 0 8px}
+.crown{font-size:56px;display:inline-block;animation:fl 3s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-8px) rotate(4deg)}}
+.sub{color:var(--mu);max-width:640px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.05)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.lbl{font-size:13px;color:var(--mu)}.num{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}.hint{font-size:12px;color:var(--mu)}
+.pos{color:var(--g)}.neg{color:var(--r)}
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease var(--d,0s),transform .6s ease var(--d,0s)}.rv.in{opacity:1;transform:none}
+.ctl{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));align-items:end}
+label{font-size:13px;color:var(--mu);display:block}
+input,select,button{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:8px 10px;width:100%}
+input[type=range]{padding:0;accent-color:var(--ac)}
+button{cursor:pointer;width:auto}button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-block;font-size:12px;padding:3px 10px;border-radius:99px;border:1px solid var(--bd);margin-top:10px}
+.chip.ok{color:var(--g);border-color:var(--g)}.chip.warn{color:var(--w);border-color:var(--w)}
+svg{width:100%;height:auto;display:block}
+.ax{fill:var(--mu);font-size:11px}.gl{stroke:var(--bd);stroke-width:1}
+.ln{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1}
+.go .ln{stroke-dashoffset:0;transition:stroke-dashoffset 1.8s ease}
+.tl{display:flex;height:14px;border-radius:99px;overflow:hidden;background:var(--bd);margin:8px 0 16px}
+.tl i{display:block;height:100%;width:0;transition:width 1.4s ease}
+.tl.in i:nth-child(1){width:40%;background:var(--b)}.tl.in i:nth-child(2){width:60%;background:var(--v)}
+.ph b{font-size:15px}.ph p{margin:.4em 0;font-size:14px}
+.ck{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);font-size:14px;opacity:0;animation:up .5s ease forwards}
+.ck:last-child{border:0}.ck .ic{flex:0 0 22px;font-weight:700}
+.ck.ok .ic{color:var(--g)}.ck.warn .ic{color:var(--w)}.ck.info .ic{color:var(--b)}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+details{margin-top:12px}summary{cursor:pointer;font-weight:600}
+pre{overflow-x:auto;background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:10px}th,td{padding:6px 8px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}tr.neg td{color:var(--r)}.dl{padding:2px 8px}
+.foot{font-size:12px;color:var(--mu);margin-top:28px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv,.ck{opacity:1;transform:none}.ln{stroke-dashoffset:0}.tl i:nth-child(1){width:40%}.tl i:nth-child(2){width:60%}}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+<div class="crown">👑</div>
+<h1>Plano dos 30 Meses</h1>
+<p class="sub">Faculdade + empréstimo + Caixinha, com simulação ao vivo, verificação das contas e CDI atualizado.</p>
+<span class="chip warn" id="chip">CDI: manual</span> <button id="th" style="margin-top:10px">◐ Tema</button>
+</header>
+
+<h2>Parâmetros</h2>
+<section class="card rv">
+<div class="ctl">
+<div><label for="cdi">CDI (% a.a.)</label><input id="cdi" type="number" step="0.01" value="13.90"></div>
+<div><label for="pct">% do CDI da Caixinha: <b id="pctv">100</b>%</label><input id="pct" type="range" min="80" max="180" value="100"></div>
+<div><label for="ir">Imposto de Renda</label><select id="ir"><option value="15">15%</option><option value="17.5">17,5%</option><option value="20" selected>20%</option><option value="22.5">22,5%</option></select></div>
+<div><label>Taxa usada na simulação</label><div class="seg"><button id="mCdi" class="on">CDI × %</button><button id="mObs">Observada (R$ 0,99/dia)</button></div></div>
+</div>
+<p class="hint" id="rt"></p>
+<button id="upd">↻ Atualizar CDI agora</button>
+</section>
+
+<h2>Onde você está no plano</h2>
+<section class="card rv"><div class="ctl"><div><label for="ps">Data em que o plano começou</label><input id="ps" type="date"></div><div><div class="lbl" id="pt">Informe a data de início para acompanhar o plano.</div></div></div>
+<div class="tl" style="margin-bottom:6px"><i id="pbar" style="background:var(--g)"></i></div><p class="hint" id="pd"></p></section>
+
+<h2>Resultado em 30 meses</h2>
+<section class="grid" id="cards"></section>
+
+<h2>Evolução do saldo</h2>
+<section class="card rv">
+<div id="chart"></div>
+<label for="ms">Mês: <b id="mv">0</b></label><input id="ms" type="range" min="0" max="42" value="30">
+<p id="ro" class="hint"></p>
+</section>
+
+<h2>As 3 fases</h2>
+<section class="card rv"><div class="tl" id="tl"><i></i><i></i></div>
+<div class="grid" id="ph"></div></section>
+
+<h2>Verificação do plano</h2>
+<section class="card rv" id="chk"></section>
+
+<h2>Cenários de rentabilidade</h2>
+<section class="card rv"><div style="overflow-x:auto"><table id="sc"></table></div></section>
+
+<h2>Cronograma mês a mês</h2>
+<section class="card rv"><div style="overflow-x:auto;max-height:380px"><table id="tb"></table></div><button id="csv">⬇ Baixar CSV</button><p class="hint">Linhas em vermelho: o rendimento líquido não cobre os R$ 500 e o saldo é consumido.</p></section>
+
+<h2>Controle de movimentos (Supabase)</h2>
+<section class="card rv">
+<p class="hint">Registre cada aporte e retirada para separar o dinheiro da faculdade (namorada) do seu. Rode antes o arquivo supabase-schema.sql e crie um usuário em Authentication. O CDI também é lido da tabela cdi_rates, atualizada todo dia útil.</p>
+<div class="ctl"><div><label for="su">URL do projeto</label><input id="su" placeholder="https://xxxx.supabase.co"></div><div><label for="sk">Chave anon (pública)</label><input id="sk"></div>
+<div><label for="em">E-mail</label><input id="em" type="email" autocomplete="username"></div><div><label for="pw">Senha</label><input id="pw" type="password" autocomplete="current-password"></div>
+<div><button id="ss">Salvar e entrar</button> <button id="so">Sair</button></div></div>
+<p class="hint" id="au">Não conectado.</p>
+<div class="ctl"><div><label for="md">Data</label><input id="md" type="date"></div>
+<div><label for="mtp">Tipo</label><select id="mtp"><option value="aporte">Aporte</option><option value="rendimento">Rendimento</option><option value="retirada_faculdade">Retirada p/ faculdade</option><option value="parcela_emprestimo">Parcela do empréstimo</option></select></div>
+<div><label for="mti">Titular</label><select id="mti"><option value="namorada">Namorada</option><option value="eu">Eu</option></select></div>
+<div><label for="mval">Valor (R$)</label><input id="mval" type="number" step="0.01" min="0.01"></div>
+<div><label for="mds">Descrição</label><input id="mds"></div><div><button id="ma">+ Registrar</button></div></div>
+<p><button id="mi">Lançar saldos iniciais (R$ 26.403 namorada + R$ 5.249,42 empréstimo)</button></p>
+<div class="grid" id="mtot" style="margin:14px 0"></div>
+<div style="overflow-x:auto"><table id="mt"></table></div>
+</section>
+
+<p class="foot">Simulação educativa, não é recomendação financeira. Os R$ 26.403 pertencem à sua namorada e têm finalidade de faculdade: mantenha esse dinheiro separado e registre cada aporte e retirada. CDI padrão: 13,90% a.a. (referência de 21/08/2026); confira o valor atual.</p>
+</main>
 <script>
-const U='https://vbzxmliwayxczxarwtgh.supabase.co',K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZienhtbGl3YXl4Y3p4YXJ3dGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MTQ4NTYsImV4cCI6MjEwNjM5MDg1Nn0.3IbBrl1IrHgVR_krvlMVCogJI3ZIoU1WHwe8i1T4cdI',base=U.replace(/\/+$/,'');
-const $=(s,e=document)=>e.querySelector(s),esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let CH=sessionStorage.getItem('ch')||'',TAB='seg_pedidos',D={},CFG={};
-const toast=m=>{const t=$('#t');t.textContent=m;t.hidden=false;clearTimeout(toast.i);toast.i=setTimeout(()=>t.hidden=true,3000)};
-async function api(f,b,pub){let r;try{r=await fetch(base+'/rest/v1/rpc/'+f,{method:'POST',headers:{apikey:K,Authorization:'Bearer '+K,'Content-Type':'application/json'},body:JSON.stringify(pub?{}:{chave:CH,...b})})}catch(_){throw new Error('Sem conexão com o banco. Verifique a internet.')}
- const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(_){}if(!r.ok){const m=j&&j.message||'HTTP '+r.status;throw new Error(/find the function|schema cache|does not exist|PGRST20/i.test(m)||r.status===404?'Banco desatualizado: rode o arquivo supabase.sql no Supabase (SQL Editor) e recarregue esta página.':m)}return j}
-const lst=t=>api('admin_listar',{p_tabela:t}),sv=(t,d)=>api('admin_salvar',{p_tabela:t,p_dados:d}),del=(t,id)=>api('admin_excluir',{p_tabela:t,p_id:id});
-const redim=f=>new Promise(ok=>{if(!/^image\/(jpeg|png|webp)$/.test(f.type))return ok(f);const im=new Image(),u=URL.createObjectURL(f);
- im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);
-  c.toBlob(b=>ok(b?new File([b],'foto.jpg',{type:'image/jpeg'}):f),'image/jpeg',.85)};im.onerror=()=>ok(f);im.src=u});
-async function up(f,pasta){const ext=(f.name.split('.').pop()||'').toLowerCase(),p=await api('admin_preparar_upload',{p_ext:ext,p_pasta:pasta});
- const r=await fetch(base+'/storage/v1/object/site-media/'+p,{method:'POST',headers:{apikey:K,Authorization:'Bearer '+K,'Content-Type':f.type||'application/octet-stream'},body:f});
- if(!r.ok)throw new Error('Falha no envio ('+r.status+'). Rode o SQL de novo.');return base+'/storage/v1/object/public/site-media/'+p}
-
-const S={
- seg_pedidos:{n:'Pedidos de seguro'},
- vendedores:{n:'Vendedores',novo:{ativo:true,ordem:0},t:r=>r.nome,s:r=>[r.cargo,r.telefone,r.unidade].filter(Boolean).join(' · '),
-  c:[['nome','Nome'],['cargo','Cargo / função'],['telefone','Telefone (como aparece)'],['whatsapp','WhatsApp (só números, com 55)'],['foto_url','Foto','img'],['unidade','Unidade / cidade'],['bio','Apresentação','area'],['ordem','Ordem (menor aparece primeiro)','num'],['ativo','Aparece no site','bool']]},
- contatos:{n:'Contatos e números',novo:{ativo:true,ordem:0,tipo:'outro'},t:r=>r.rotulo,s:r=>r.tipo+' · '+(r.telefone||''),
-  c:[['rotulo','Nome do setor'],['tipo','Tipo (recepcao e seguros trocam os números do site)','select:recepcao,seguros,vendas,outro'],['telefone','Telefone (como aparece)'],['whatsapp','WhatsApp (só números, com 55)'],['ordem','Ordem','num'],['ativo','Ativo','bool']]},
- seg_perguntas:{n:'Questionário do seguro',novo:{ativo:true,ordem:99,tipo:'text',obrigatoria:true},t:r=>r.ordem+'. '+r.rotulo,s:r=>r.tipo+(r.obrigatoria?' · obrigatória':'')+(r.plano?' · plano: '+r.plano:'')+(r.ativo?'':' · INATIVA'),
-  c:[['rotulo','Pergunta'],['tipo','Tipo de resposta','select:text,tel,cpf,email,date,number,placa,select,area'],['opcoes','Opções (separe por vírgula, só tipo select). Coloque ! antes da opção que BLOQUEIA a cotação. Ex.: Sim,!Não'],['ajuda','Texto de ajuda (opcional)'],['plano','Só neste plano (vazio = todos)','select:,Furto e Roubo,Seguro Total'],['obrigatoria','Obrigatória','bool'],['ordem','Ordem','num'],['ativo','Ativa','bool']]},
- avaliacoes:{n:'Avaliações',t:r=>r.nome+' · '+r.estrelas+' ★',s:r=>r.status+(r.destacado?' · destaque':'')+' · '+(r.comentario||'sem comentário'),
-  c:[['nome','Nome'],['estrelas','Nota','num'],['comentario','Comentário','area'],['status','Status','select:pendente,aprovado,oculto'],['destacado','Destaque','bool']]},
- site:{n:'Vídeo e textos'}};
-
-function shell(){$('#app').innerHTML=`<div class="top"><h1>Painel · Grupo Star Motos</h1><div><a class="b" href="/">Ver site</a> <button class="b" id="sair">Sair</button></div></div>
- <div class="tabs">${Object.keys(S).map(k=>`<button class="b${k===TAB?' on':''}" data-t="${k}">${S[k].n}</button>`).join('')}</div><div id="body"></div>`;
- document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;show()});
- $('#sair').onclick=()=>{sessionStorage.removeItem('ch');CH='';login()}}
-function login(m){$('#app').innerHTML=`<div class="c" style="max-width:360px;margin:60px auto"><h3>Acesso restrito</h3><input class="f" id="ch" type="password" placeholder="Senha do painel" autocomplete="current-password" style="margin:12px 0">
- ${m?`<p class="m" style="color:var(--red)">${esc(m)}</p>`:''}<button class="b p" id="go" style="width:100%">Entrar</button></div>`;
- const ir=async()=>{CH=$('#ch').value;if(!CH)return;$('#go').disabled=true;$('#go').textContent='Entrando…';try{await lst('contatos');sessionStorage.setItem('ch',CH);show()}catch(e){login(/invalida/i.test(e.message)?'Senha inválida.':e.message)}};
- $('#go').onclick=ir;$('#ch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();ir()}});setTimeout(()=>$('#ch').focus(),50)}
-async function show(){shell();const b=$('#body');b.innerHTML='<p class="m">Carregando…</p>';
- try{if(TAB==='site')return site();
-  D[TAB]=await lst(TAB);if(TAB==='seg_pedidos'){D.vendedores=await lst('vendedores');return pedidos()}lista()}
- catch(e){if(/invalida/.test(e.message))login('Senha inválida.');else b.innerHTML='<p class="m">Erro: '+esc(e.message)+'</p>'}}
-
-function lista(){const s=S[TAB],L=D[TAB],ord=s.c.some(x=>x[0]==='ordem');
- $('#body').innerHTML=`${s.novo?`<button class="b p" id="nv">+ Adicionar</button>`:''}<div style="margin-top:12px">${L.map((r,i)=>`<div class="c r"><div class="r" style="gap:12px;justify-content:flex-start">${r.foto_url!==undefined?`<img class="av" src="${esc(r.foto_url||'')}" alt="" onerror="this.style.visibility='hidden'">`:''}<div><b>${esc(s.t(r))}</b><div class="m">${esc(s.s(r))}</div></div></div>
- <div>${ord?`<button class="b" data-u="${i}" aria-label="Subir">▲</button> <button class="b" data-n="${i}" aria-label="Descer">▼</button> `:''}<button class="b" data-e="${i}">Editar</button> <button class="b x" data-x="${i}">Excluir</button></div></div>`).join('')||'<p class="m">Nada por aqui ainda.</p>'}</div>`;
- if($('#nv'))$('#nv').onclick=()=>form({...s.novo});
- document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>form(L[b.dataset.e]));
- const mv=async(i,d)=>{const j=i+d;if(j<0||j>=L.length)return;const A=[...L];[A[i],A[j]]=[A[j],A[i]];
-  try{for(let k=0;k<A.length;k++)if(A[k].ordem!==k*10)await sv(TAB,{...A[k],ordem:k*10});show()}catch(e){toast(e.message)}};
- document.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>mv(+b.dataset.u,-1));document.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>mv(+b.dataset.n,1));
- document.querySelectorAll('[data-x]').forEach(b=>b.onclick=async()=>{if(!confirm('Excluir para sempre?'))return;try{await del(TAB,L[b.dataset.x].id);toast('Excluído');show()}catch(e){toast(e.message)}})}
-function form(r){const s=S[TAB],d=document.createElement('dialog');
- d.innerHTML=`<h3>${r.id?'Editar':'Adicionar'} · ${esc(s.n)}</h3><form>${s.c.map(([k,l,t])=>{const v=r[k]??'';t=t||'text';
-  if(t==='bool')return`<label class="chk"><input type="checkbox" name="${k}" ${r[k]?'checked':''}> ${l}</label>`;
-  if(t==='area')return`<label>${l}</label><textarea class="f" name="${k}" rows="3">${esc(v)}</textarea>`;
-  if(t.startsWith('select:'))return`<label>${l}</label><select class="f" name="${k}">${t.slice(7).split(',').map(o=>`<option ${o===v?'selected':''}>${o}</option>`).join('')}</select>`;
-  if(t==='img')return`<label>${l}</label><div class="r" style="justify-content:flex-start;gap:12px"><img class="av" id="pv" src="${esc(v)}" alt=""><input type="file" accept="image/*" id="fi"></div><input type="hidden" name="${k}" value="${esc(v)}">`;
-  return`<label>${l}</label><input class="f" name="${k}" type="${t==='num'?'number':'text'}" value="${esc(v)}">`}).join('')}
-  <div class="r" style="margin-top:16px"><button type="button" class="b" id="cn">Cancelar</button><button class="b p" id="ok">Salvar</button></div></form>`;
- document.body.appendChild(d);d.showModal();d.onclose=()=>d.remove();$('#cn',d).onclick=()=>d.close();
- const fi=$('#fi',d);if(fi)fi.onchange=async()=>{const f=fi.files[0];if(!f)return;if(f.size>6e6)return toast('Foto acima de 6 MB');
-  try{toast('Enviando foto…');const u=await up(await redim(f),'f');$('[name=foto_url]',d).value=u;$('#pv',d).src=u;toast('Foto enviada. Clique em Salvar.')}catch(e){toast(e.message)}};
- $('form',d).onsubmit=async e=>{e.preventDefault();const o={...r};
-  s.c.forEach(([k,,t])=>{const el=$('[name='+k+']',d);o[k]=t==='bool'?el.checked:t==='num'?(el.value===''?null:Number(el.value)):el.value.trim()});
-  if(!o.id)delete o.id;if(s.c[0][0]==='nome'&&!o.nome||s.c[0][0]==='rotulo'&&!o.rotulo)return toast('Preencha o primeiro campo');
-  try{await sv(TAB,o);d.close();toast('Salvo!');show()}catch(er){toast(er.message)}}}
-
-const ST=['novo','em contato','cotado','fechado','perdido'];
-const fone=p=>{const x=(p.dados||[]).find(i=>String(i.v).replace(/\D/g,'').length>=10&&/tel|whats|fone|celular/i.test(i.r));return x?String(x.v).replace(/\D/g,''):''};
-function pedidos(){const L=D.seg_pedidos,V=Object.fromEntries(D.vendedores.map(v=>[v.id,v.nome]));D.f=D.f||{q:'',s:''};
- $('#body').innerHTML=`<div class="r" style="margin-bottom:10px"><span class="m">${L.length} pedidos · ${L.filter(p=>p.status==='novo').length} novos</span><button class="b" id="csv">Baixar planilha (CSV)</button></div>
- <div class="r" style="margin-bottom:12px;justify-content:flex-start"><input class="f" id="q" style="flex:1;min-width:180px" placeholder="Buscar por nome, telefone, cidade…" value="${esc(D.f.q)}">
- <select class="f" id="fs" style="width:auto"><option value="">Todos os status</option>${ST.map(o=>`<option ${o===D.f.s?'selected':''}>${o}</option>`).join('')}</select></div><div id="pl"></div>`;
- const draw=()=>{const q=D.f.q.toLowerCase(),v=L.map((p,i)=>[p,i]).filter(([p])=>(!D.f.s||p.status===D.f.s)&&(!q||JSON.stringify(p.dados).toLowerCase().includes(q)));
-  $('#pl').innerHTML=v.map(([p,i])=>`<div class="c"><div class="r"><b>${esc(((p.dados||[]).find(x=>/nome/i.test(x.r))||{}).v||'Sem nome')}</b><span class="tag">${esc(p.plano||'')} · ${p.status}</span></div>
- <div class="m">${new Date(p.criado_em).toLocaleString('pt-BR')}${p.vendedor_id?' · consultor: '+esc(V[p.vendedor_id]||'—'):''}</div>
- <div class="kv">${(p.dados||[]).map(x=>`<b>${esc(x.r)}</b><span>${esc(x.v)||'—'}</span>`).join('')}</div>
- <div class="r"><select class="f" style="width:auto" data-s="${i}">${ST.map(o=>`<option ${o===p.status?'selected':''}>${o}</option>`).join('')}</select>
- <input class="f" style="flex:1;min-width:160px" placeholder="Observação interna" value="${esc(p.obs||'')}" data-o="${i}">
- <button class="b p" data-k="${i}">Salvar</button>${fone(p)?`<a class="b" target="_blank" rel="noopener" href="https://wa.me/55${fone(p).replace(/^55/,'')}">WhatsApp</a>`:''}<button class="b x" data-d="${i}">Excluir</button></div></div>`).join('')||'<p class="m">Nenhum pedido encontrado.</p>';
-  document.querySelectorAll('[data-k]').forEach(b=>b.onclick=async()=>{const i=b.dataset.k,p=L[i];try{await sv('seg_pedidos',{id:p.id,status:$('[data-s="'+i+'"]').value,obs:$('[data-o="'+i+'"]').value});toast('Salvo');show()}catch(e){toast(e.message)}});
-  document.querySelectorAll('[data-d]').forEach(b=>b.onclick=async()=>{if(confirm('Excluir este pedido?'))try{await del('seg_pedidos',L[b.dataset.d].id);show()}catch(e){toast(e.message)}})};
- $('#q').oninput=e=>{D.f.q=e.target.value;draw()};$('#fs').onchange=e=>{D.f.s=e.target.value;draw()};draw();
- $('#csv').onclick=()=>{const cols=[...new Set(L.flatMap(p=>(p.dados||[]).map(x=>x.r)))],q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-  const rows=[['Data','Plano','Status','Consultor',...cols,'Obs'],...L.map(p=>[new Date(p.criado_em).toLocaleString('pt-BR'),p.plano,p.status,V[p.vendedor_id]||'',...cols.map(c=>((p.dados||[]).find(x=>x.r===c)||{}).v||''),p.obs||''])];
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(q).join(';')).join('\n')],{type:'text/csv'}));a.download='pedidos-seguro.csv';a.click()}}
-
-async function site(){CFG=await api('site_config_publica',{},1)||{};const c=CFG;
- $('#body').innerHTML=`<div class="c"><h3>Vídeo da página inicial</h3><label>Enviar arquivo (MP4, WebM ou MOV até 50 MB)</label><input type="file" id="arq" accept="video/*">
- <label>Ou colar link (YouTube, Vimeo ou .mp4)</label><input class="f" id="lk" placeholder="https://" value="${esc(c.video_url||'')}">
- <div class="r" style="margin-top:12px;justify-content:flex-start"><button class="b p" id="sl">Salvar link</button><button class="b x" id="rv">Remover vídeo</button></div></div>
- <div class="c"><h3>Textos do topo</h3><label>Título</label><input class="f" id="t1" value="${esc(c.titulo||'')}"><label>Subtítulo</label><textarea class="f" id="t2" rows="3">${esc(c.subtitulo||'')}</textarea>
- <label>Legenda do vídeo</label><textarea class="f" id="t3" rows="3">${esc(c.legenda||'')}</textarea><p class="m">Vazio = texto original do site.</p><button class="b p" id="st" style="margin-top:10px">Salvar textos</button></div>`;
- const cfg=async(d,m)=>{try{await api('admin_salvar_config',{p_dados:d});toast(m);site()}catch(e){toast(e.message)}};
- $('#arq').onchange=async e=>{const f=e.target.files[0];if(!f)return;if(f.size>50*1048576)return toast('Acima de 50 MB. Use link do YouTube.');
-  try{toast('Enviando… não feche a página.');cfg({video_url:await up(f,'v')},'Vídeo publicado!')}catch(er){toast(er.message)}};
- $('#sl').onclick=()=>{const v=$('#lk').value.trim();if(!/^https:\/\//i.test(v))return toast('Cole um link com https://');cfg({video_url:v},'Link salvo')};
- $('#rv').onclick=()=>{if(confirm('Remover o vídeo?'))cfg({video_url:''},'Vídeo removido')};
- $('#st').onclick=()=>cfg({titulo:$('#t1').value.trim(),subtitulo:$('#t2').value.trim(),legenda:$('#t3').value.trim()},'Textos salvos')}
-CH?show():login();
-</script></body></html>
+const $=s=>document.querySelector(s),reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const BRL=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const PCT=(v,d=2)=>v.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})+'%';
+const S={cdi:13.90,pct:100,ir:20,mode:'cdi'},OBS=0.99*30/1700;
+const gm=()=>S.mode==='obs'?OBS:(Math.pow(1+S.cdi/100,1/12)-1)*S.pct/100;
+function sim(g,loan){const k=1-S.ir/100;let C=26403+(loan?5249.42:0),o=[C],s=0,y0=0,low=0;
+ for(let m=1;m<=42;m++){const y=C*g*k;
+  if(m<=30){s+=y;if(m==1)y0=y;if(y<500)low++;C+=y-500+200+((m>12||!loan)?508.04:0)}else C+=y;
+  o.push(C)}
+ return{o,s,y0,low}}
+function be(){let lo=0,hi=.2;for(let i=0;i<50;i++){const m=(lo+hi)/2;sim(m,true).o[30]-sim(m,false).o[30]<0?lo=m:hi=m}return lo}
+function irr(){let lo=1e-4,hi=.2;for(let i=0;i<60;i++){const r=(lo+hi)/2;508.04*(1-Math.pow(1+r,-12))/r>5249.42?lo=r:hi=r}return lo}
+function cu(el,to,f){const from=el._v||0;el._v=to;const t0=performance.now(),d=reduce?0:900;
+ (function s(t){const p=d?Math.min((t-t0)/d,1):1,e=1-Math.pow(1-p,3);el.textContent=f(from+(to-from)*e);if(p<1)requestAnimationFrame(s)})(t0)}
+const CARDS=[['lucro','Lucro líquido em 30 meses','b','rendimento líquido − juros do empréstimo'],
+['rend','Rendimento líquido acumulado','b','já descontado o IR'],
+['saldo','Saldo da aplicação no mês 30','b','com a faculdade toda paga'],
+['ret','Retorno sobre R$ 31.652,42','p','em 30 meses, líquido'],
+['vs','Com empréstimo vs. sem','b','diferença de saldo no mês 30'],
+['cov','Rendimento ÷ faculdade (mês 1)','p','100% = rendimento paga os R$ 500']];
+$('#cards').innerHTML=CARDS.map((c,i)=>`<div class="card rv" style="--d:${i*.08}s"><div class="lbl">${c[1]}</div><div class="num" id="k_${c[0]}">0</div><div class="hint">${c[3]}</div></div>`).join('');
+let A,B,X;
+function chart(){
+ const W=720,H=300,L=56,R=12,T=14,Bt=28,n=42,all=A.o.concat(B.o),mn=Math.min(...all),mx=Math.max(...all),pd=(mx-mn)*.08||1,lo=mn-pd,hi=mx+pd;
+ const x=i=>L+(W-L-R)*i/n,y=v=>T+(H-T-Bt)*(1-(v-lo)/(hi-lo));X={x,y};
+ const P=s=>s.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join('');
+ let g='';for(let i=0;i<=4;i++){const v=lo+(hi-lo)*i/4;g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L-6}" y="${y(v)+4}" text-anchor="end">R$ ${Math.round(v/1000)}k</text>`}
+ for(let m=0;m<=42;m+=6)g+=`<text class="ax" x="${x(m)}" y="${H-8}" text-anchor="middle">${m}</text>`;
+ const mk=(m,t)=>`<line x1="${x(m)}" x2="${x(m)}" y1="${T}" y2="${H-Bt}" stroke="var(--mu)" stroke-dasharray="4 4"/><text class="ax" x="${x(m)+4}" y="${T+10}">${t}</text>`;
+ $('#chart').innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}${mk(12,'fim do empréstimo')}${mk(30,'fim da faculdade')}
+ <path class="ln" pathLength="1" d="${P(B.o)}" stroke="var(--mu)"/><path class="ln" pathLength="1" d="${P(A.o)}" stroke="var(--ac)"/>
+ <line id="cl" y1="${T}" y2="${H-Bt}" stroke="var(--tx)" opacity=".4"/><circle id="ca" r="5" fill="var(--ac)"/><circle id="cb" r="5" fill="var(--mu)"/></svg>
+ <p class="hint"><b style="color:var(--ac)">━</b> com empréstimo &nbsp; <b style="color:var(--mu)">━</b> sem empréstimo (você investe os mesmos R$ 508,04 por mês)</p>`;
+ requestAnimationFrame(()=>requestAnimationFrame(()=>$('#chart svg').classList.add('go')));cur()}
+function cur(){const m=+$('#ms').value;$('#mv').textContent=m;const a=A.o[m],b=B.o[m];
+ $('#cl').setAttribute('x1',X.x(m));$('#cl').setAttribute('x2',X.x(m));
+ $('#ca').setAttribute('cx',X.x(m));$('#ca').setAttribute('cy',X.y(a));$('#cb').setAttribute('cx',X.x(m));$('#cb').setAttribute('cy',X.y(b));
+ $('#ro').textContent=`Mês ${m}: com empréstimo ${BRL(a)} · sem empréstimo ${BRL(b)} · diferença ${BRL(a-b)}`}
+function checks(g,irrm,bg){
+ const own=200*12+(200+508.04)*18,imp=Math.pow(1+OBS,12)-1,impPct=imp*100/S.cdi,ann=Math.pow(1+g,12)-1;
+ const L=[
+ [(26403+5249.42).toFixed(2)==='31652.42'?'ok':'warn','Capital inicial','R$ 26.403,00 + R$ 5.249,42 = R$ 31.652,42. Confere.'],
+ [(12*508.04).toFixed(2)==='6096.48'?'ok':'warn','Empréstimo','12 × R$ 508,04 = R$ 6.096,48; juros de R$ 847,06. Confere.'],
+ ['info','Custo real do empréstimo',`Taxa efetiva de ${PCT(irrm*100)} ao mês (${PCT((Math.pow(1+irrm,12)-1)*100,1)} ao ano).`],
+ [impPct>130?'warn':'ok','Rendimento observado',`R$ 0,99 ÷ R$ 1.700 = 0,0582%/dia → ${BRL(31652.42*.99/1700)}/dia e ${BRL(31652.42*OBS)} em 30 dias (${PCT(OBS*100)} a.m. = ${PCT(imp*100,1)} a.a., cerca de ${PCT(impPct,0)} do CDI). ${impPct>130?'Isso é bem acima de um CDB comum; provavelmente vale só para parte do saldo (promoção/limite). Não conte com isso para R$ 31 mil.':''}`],
+ ['warn','Sobra mensal',`${BRL(31652.42*OBS)} − R$ 500 = ${BRL(31652.42*OBS-500)}, e não R$ 58. O aporte inicial seria cerca de R$ 253, não R$ 258.`],
+ ['warn','Aportes "próprios"',`O texto soma R$ 16.884,72, mas R$ 258 e R$ 766,04 incluem a sobra do rendimento. Dinheiro do seu bolso: R$ 200×12 + R$ 708,04×18 = ${BRL(own)}.`],
+ [A.y0>=500?'ok':'warn','Rendimento paga a faculdade?',`Com a taxa atual, o rendimento líquido do mês 1 é ${BRL(A.y0)} contra R$ 500. ${A.low?`Em ${A.low} dos 30 meses ele fica abaixo de R$ 500 e o saldo é consumido.`:'Cobre todos os 30 meses.'}`],
+ ['info','O empréstimo é necessário?','Não para pagar a faculdade: R$ 15.000 (30 × R$ 500) cabem nos R$ 26.403 mesmo sem rendimento. O empréstimo é alavancagem, uma aposta de que o rendimento supera o custo.'],
+ [A.o[30]>=B.o[30]?'ok':'warn','Compensa pegar o empréstimo?',`Só se o rendimento líquido passar de ${PCT(irrm*100)} ao mês, isto é, bruto de ${PCT(bg*100)} a.m. (${PCT((Math.pow(1+bg,12)-1)*100,1)} a.a. ≈ ${PCT((Math.pow(1+bg,12)-1)*100/S.cdi,0)} do CDI). Hoje a taxa simulada é ${PCT(g*100)} a.m. (${PCT(ann*100,1)} a.a.): ${A.o[30]>=B.o[30]?'compensa':'não compensa'} (${BRL(A.o[30]-B.o[30])} no mês 30).`]];
+ $('#chk').innerHTML=L.map((r,i)=>`<div class="ck ${r[0]}" style="animation-delay:${i*.12}s"><span class="ic">${{ok:'✓',warn:'!',info:'i'}[r[0]]}</span><div><b>${r[1]}</b><br>${r[2]}</div></div>`).join('')}
+function render(){
+ const g=gm(),irrm=irr(),bg=be();A=sim(g,true);B=sim(g,false);
+ const lucro=A.s-847.06,v={lucro,rend:A.s,saldo:A.o[30],ret:A.s/31652.42*100,vs:A.o[30]-B.o[30],cov:A.y0/500*100};
+ CARDS.forEach(c=>{const el=$('#k_'+c[0]);cu(el,v[c[0]],c[2]==='b'?BRL:x=>PCT(x));
+  if(c[0]=='lucro'||c[0]=='vs')el.className='num '+(v[c[0]]>=0?'pos':'neg')});
+ $('#rt').textContent=`Taxa mensal bruta usada: ${PCT(g*100)} (${PCT((Math.pow(1+g,12)-1)*100,1)} a.a.), líquida de IR: ${PCT(g*(1-S.ir/100)*100)}.`;
+ $('#ph').innerHTML=[['b','Fase 1 · meses 1 a 12','Salário paga a parcela de R$ 508,04. Você aporta R$ 200 e a sobra do rendimento fica aplicada.',A.o[12]],
+ ['v','Fase 2 · meses 13 a 30','Empréstimo quitado: aporte sobe para R$ 708,04 do seu bolso, mais a sobra. A faculdade continua saindo.',A.o[30]],
+ ['g','Fase 3 · após o mês 30','Os R$ 500 deixam de sair e todo o rendimento é reinvestido. Saldo 12 meses depois:',A.o[42]]]
+ .map(p=>`<div class="ph"><b style="color:var(--${p[0]})">${p[1]}</b><p>${p[2]}</p><div class="num" style="font-size:20px">${BRL(p[3])}</div></div>`).join('');
+ checks(g,irrm,bg);chart();table();scen();prog();
+ try{localStorage.setItem('plano',JSON.stringify(S))}catch(e){}}
+function seg(){$('#mCdi').className=S.mode=='cdi'?'on':'';$('#mObs').className=S.mode=='obs'?'on':''}
+$('#cdi').oninput=e=>{S.cdi=+e.target.value||0;render()};
+$('#pct').oninput=e=>{S.pct=+e.target.value;$('#pctv').textContent=S.pct;render()};
+$('#ir').onchange=e=>{S.ir=+e.target.value;render()};
+$('#mCdi').onclick=()=>{S.mode='cdi';seg();render()};$('#mObs').onclick=()=>{S.mode='obs';seg();render()};
+$('#ms').oninput=cur;
+const chip=(t,k)=>{const c=$('#chip');c.textContent=t;c.className='chip '+k};
+const SUPABASE_URL='https://qrmwgqkiwoenlkfzjazs.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFybXdncWtpd29lbmxrZnpqYXpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MDc3OTIsImV4cCI6MjEwNjM4Mzc5Mn0.lhgkQS_WcB55uG0SKk0ngQgpc9oruFRt2H2D8orjNnc';
+const cfg=()=>{let c={};try{c=JSON.parse(localStorage.getItem('supa')||'{}')}catch(e){}return{url:c.url||SUPABASE_URL,key:c.key||SUPABASE_KEY}};
+async function loadCDI(){chip('CDI: buscando…','warn');const c=cfg();
+ try{let v,d,s;
+  if(c.url&&c.key){const r=await fetch(c.url.replace(/\/$/,'')+'/rest/v1/cdi_rates?select=date,annual&order=date.desc&limit=1',{headers:{apikey:c.key,Authorization:'Bearer '+c.key}});const j=await r.json();v=+j[0].annual;d=j[0].date;s='Supabase'}
+  else{const r=await fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.4389/dados/ultimos/1?formato=json');const j=await r.json();v=parseFloat(j[0].valor);d=j[0].data;s='Banco Central'}
+  S.cdi=v;$('#cdi').value=v;chip(`CDI ${PCT(v)} · ${s} · ${d}`,'ok');render()}
+ catch(e){chip('CDI: manual (sem conexão com a API)','warn')}}
+$('#upd').onclick=loadCDI;
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function prog(){let s='';try{s=localStorage.getItem('start')||''}catch(e){}
+ if(!s){$('#pbar').style.width='0';return}
+ const d=new Date(s+'T00:00'),n=new Date();let m=(n.getFullYear()-d.getFullYear())*12+n.getMonth()-d.getMonth()-(n.getDate()<d.getDate()?1:0);m=Math.max(0,Math.min(42,m));
+ $('#pt').innerHTML=m>=30?'<b class="pos">Faculdade concluída: agora o rendimento é todo reinvestido.</b>':`<b>Mês ${m} de 30</b> · ${m<12?(12-m)+' parcelas restantes':'empréstimo quitado'}`;
+ $('#pbar').style.width=Math.min(100,m/30*100)+'%';
+ $('#pd').textContent=`Saldo previsto hoje: ${BRL(A.o[m])} · faculdade já paga: ${BRL(500*Math.min(m,30))} · faltam ${BRL(500*Math.max(0,30-m))}.`}
+$('#ps').onchange=e=>{try{localStorage.setItem('start',e.target.value)}catch(x){}prog()};
+function table(){let o='<tr><th>Mês</th><th>Fase</th><th>Rend. líquido</th><th>Faculdade</th><th>Seu aporte</th><th>Parcela</th><th>Saldo</th></tr>';
+ for(let m=1;m<=30;m++){const y=A.o[m-1]*gm()*(1-S.ir/100);
+  o+=`<tr class="${y<500?'neg':''}"><td>${m}</td><td>${m<=12?1:2}</td><td>${BRL(y)}</td><td>${BRL(500)}</td><td>${BRL(200+(m>12?508.04:0))}</td><td>${m<=12?BRL(508.04):'—'}</td><td>${BRL(A.o[m])}</td></tr>`}
+ $('#tb').innerHTML=o}
+function scen(){const mc=(Math.pow(1+S.cdi/100,1/12)-1);let o='<tr><th>Cenário</th><th>Taxa a.m.</th><th>Lucro em 30 meses</th><th>Com vs. sem empréstimo</th></tr>';
+ [['80% do CDI',mc*.8],['100% do CDI',mc],['120% do CDI',mc*1.2],['Observada (R$ 0,99/dia)',OBS]].forEach(c=>{const a=sim(c[1],true),b=sim(c[1],false),d=a.o[30]-b.o[30],l=a.s-847.06;
+  o+=`<tr><td>${c[0]}</td><td>${PCT(c[1]*100)}</td><td class="${l>=0?'pos':'neg'}">${BRL(l)}</td><td class="${d>=0?'pos':'neg'}">${BRL(d)}</td></tr>`});
+ $('#sc').innerHTML=o}
+$('#csv').onclick=()=>{let c='mes;rendimento_liquido;faculdade;aporte_proprio;parcela;saldo\n';
+ for(let m=1;m<=30;m++)c+=[m,(A.o[m-1]*gm()*(1-S.ir/100)).toFixed(2),500,(200+(m>12?508.04:0)).toFixed(2),m<=12?508.04:0,A.o[m].toFixed(2)].join(';')+'\n';
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+c],{type:'text/csv'}));a.download='plano-30-meses.csv';a.click()};
+$('#th').onclick=()=>{const d=document.documentElement,dk=(d.dataset.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'))=='dark';d.dataset.theme=dk?'light':'dark';try{localStorage.setItem('theme',d.dataset.theme)}catch(e){}};
+let TOK=null;const au=t=>$('#au').textContent=t;
+async function sb(p,o={}){const c=cfg();const r=await fetch(c.url.replace(/\/$/,'')+p,{...o,headers:{apikey:c.key,Authorization:'Bearer '+(TOK||c.key),'Content-Type':'application/json',Prefer:'return=representation',...(o.headers||{})}});if(!r.ok)throw new Error((await r.text()).slice(0,160));return r.status==204?null:r.json()}
+async function login(){const c=cfg(),r=await fetch(c.url.replace(/\/$/,'')+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:c.key,'Content-Type':'application/json'},body:JSON.stringify({email:$('#em').value,password:$('#pw').value})});const j=await r.json();if(!j.access_token)throw new Error(j.error_description||j.msg||'login falhou');TOK=j.access_token;try{sessionStorage.setItem('tok',TOK)}catch(e){}}
+async function loadMov(){try{const j=await sb('/rest/v1/movimentos?select=*&order=data.desc,created_at.desc&limit=200'),t={};
+ au('Conectado · '+j.length+' movimentos.');
+ j.forEach(r=>{const s={aporte:1,rendimento:1,retirada_faculdade:-1}[r.tipo]||0;t[r.titular]=(t[r.titular]||0)+s*r.valor});
+ $('#mtot').innerHTML=['namorada','eu'].map(k=>`<div class="card"><div class="lbl">Saldo aplicado de: ${k}</div><div class="num">${BRL(t[k]||0)}</div></div>`).join('')+`<div class="card"><div class="lbl">Total aplicado</div><div class="num">${BRL((t.namorada||0)+(t.eu||0))}</div></div>`;
+ $('#mt').innerHTML='<tr><th>Data</th><th>Tipo</th><th>Titular</th><th>Valor</th><th>Descrição</th><th></th></tr>'+j.map(r=>`<tr><td>${esc(r.data)}</td><td>${esc(r.tipo)}</td><td>${esc(r.titular)}</td><td>${BRL(+r.valor)}</td><td>${esc(r.descricao)}</td><td><button class="dl" data-id="${esc(r.id)}">✕</button></td></tr>`).join('')}
+ catch(e){au('Erro: '+e.message)}}
+$('#ss').onclick=async()=>{try{localStorage.setItem('supa',JSON.stringify({url:$('#su').value.trim(),key:$('#sk').value.trim()}))}catch(e){}
+ await loadCDI();try{await login();await loadMov()}catch(e){au('Login: '+e.message)}};
+$('#so').onclick=()=>{TOK=null;try{sessionStorage.removeItem('tok')}catch(e){}$('#mt').innerHTML='';$('#mtot').innerHTML='';au('Não conectado.')};
+$('#ma').onclick=async()=>{if(!TOK)return au('Entre primeiro.');try{await sb('/rest/v1/movimentos',{method:'POST',body:JSON.stringify({data:$('#md').value,tipo:$('#mtp').value,titular:$('#mti').value,valor:+$('#mval').value,descricao:$('#mds').value||null})});$('#mval').value='';$('#mds').value='';loadMov()}catch(e){au('Erro: '+e.message)}};
+$('#mi').onclick=async()=>{if(!TOK)return au('Entre primeiro.');if(!confirm('Lançar os dois aportes iniciais? Faça isso só uma vez.'))return;
+ const d=$('#md').value;try{await sb('/rest/v1/movimentos',{method:'POST',body:JSON.stringify([{data:d,tipo:'aporte',titular:'namorada',valor:26403,descricao:'Dinheiro da faculdade'},{data:d,tipo:'aporte',titular:'eu',valor:5249.42,descricao:'Empréstimo SUDACRED'}])});loadMov()}catch(e){au('Erro: '+e.message)}};
+$('#mt').onclick=async e=>{const id=e.target.dataset.id;if(id&&confirm('Apagar este movimento?')){try{await sb('/rest/v1/movimentos?id=eq.'+encodeURIComponent(id),{method:'DELETE'});loadMov()}catch(x){au('Erro: '+x.message)}}};
+try{Object.assign(S,JSON.parse(localStorage.getItem('plano')||'{}'));const c=cfg();$('#su').value=c.url||'';$('#sk').value=c.key||''}catch(e){}
+$('#cdi').value=S.cdi;$('#pct').value=S.pct;$('#pctv').textContent=S.pct;$('#ir').value=S.ir;seg();
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
+document.querySelectorAll('.rv,.tl').forEach(e=>io.observe(e));
+render();loadCDI();
+$('#md').value=new Date().toISOString().slice(0,10);
+try{$('#ps').value=localStorage.getItem('start')||'';const t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t;TOK=sessionStorage.getItem('tok');if(TOK&&cfg().url)loadMov()}catch(e){}
+</script>
+</body>
+</html>
